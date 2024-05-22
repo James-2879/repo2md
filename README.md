@@ -16,7 +16,6 @@ Simple utility to generate a markdown document from files in a cloned Git reposi
 
 ### TODO
 
-> 1. `argparse`
-> 2. Exclude more file types
-> 3. Add contents
-> 4. Classes etc.
+> 1. Exclude more file types
+> 2. Add contents
+> 3. Classes etc.

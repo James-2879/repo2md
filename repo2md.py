@@ -1,17 +1,7 @@
-# import argparse
+import argparse
 import os
 
-# parser = argparse.ArgumentParser(description = "A useful description.")
-# parser.add_argument("--temp_arg", "-t"
-#                     type = str,
-#                     help = "something useful")
-# args = parser.parse_args()
-
-# ---------- CONFIGS ----------
-directory = "/home/james/Documents/test_repo/"
-output_file = "/home/james/Downloads/output.md"
 exclude = ["/.git", "/data", ".tsv", ".txt", ".md", ".lock", ".csv"]
-# -----------------------------
 
 def list_files_recursively(directory):
     # List all files in specified directory.
@@ -44,15 +34,14 @@ def file_depth(file_path, reference_directory):
     relative_path = os.path.relpath(file_path, reference_directory)
     return relative_path.count(os.sep)
 
-if __name__ == "__main__":
-
+def repo_to_markdown(repo_directory, md_file_path = "output.md"):
     # Get all files in directory
-    files = list_files_recursively(directory)
+    files = list_files_recursively(repo_directory)
     # Split off repo name
-    repo = directory.rsplit("/", 2)[1]
+    repo = repo_directory.rsplit("/", 2)[1]
 
     # Open a new markdown file
-    markdown_file = open(output_file, "w")
+    markdown_file = open(md_file_path, "w")
     markdown_file.write(make_heading(text = repo, level = 1))
     markdown_file.write("\nGenerated markdown file for GitHub repository.\n\n")
 
@@ -61,7 +50,7 @@ if __name__ == "__main__":
         print("Processing file "+str(index)+" of "+str(len(files)), end = "\r")
         # Check file depth
         file_name = path.rsplit("/", 1)[1]
-        depth = file_depth(file_path = path, reference_directory = directory)
+        depth = file_depth(file_path = path, reference_directory = repo_directory)
         try:
             # Read the file
             with open(path, "r") as file:
@@ -77,3 +66,22 @@ if __name__ == "__main__":
     markdown_file.close()
     print(" " * 50, end = "\n")
     print("> Done.")
+
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(description="Convert respository contents to markdown file.")
+    parser.add_argument("--repo_path",
+                        type=str,
+                        help="path to repo",
+                        required=True)
+    parser.add_argument("--md_file_path",
+                        type=str,
+                        help="path to save the output MD file",
+                        default="output.md",
+                        nargs="?")
+    args = parser.parse_args()
+
+    repo_to_markdown(repo_directory = args.repo_path,
+                     md_file_path = args.md_file_path)
+    
